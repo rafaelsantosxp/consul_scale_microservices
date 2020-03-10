@@ -1,0 +1,8 @@
+---
+    - name: install nginx
+      hosts: nginx
+      become: true
+      user: root
+
+      roles:
+        - ansible-role-nginx

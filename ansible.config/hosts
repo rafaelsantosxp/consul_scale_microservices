@@ -1,0 +1,9 @@
+[docker]
+rafael01.rls.com
+rafael02.rls.com
+rafael03.rls.com
+rafael04.rls.com
+
+[nginx]
+rafael05.rls.com
+~                             

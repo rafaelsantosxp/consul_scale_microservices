@@ -1,0 +1,23 @@
+---
+- name: consul 
+  hosts: all
+  become: true
+  user: root
+  tasks:
+     
+    - include: tasks/config.yml
+      tags:
+        - consul
+        - consul-template
+        - conf
+    
+    - include: tasks/consul.yml
+      become: true
+      tags:
+        - consul
+    
+    - include: tasks/consul-template.yml
+      when: nginx_pkg
+      become: true
+      tags:
+        - consul-template

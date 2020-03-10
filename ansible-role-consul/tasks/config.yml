@@ -1,0 +1,31 @@
+---
+
+- name: garantindo que o unzip esteja instalado
+  yum:
+    name: unzip
+    state: present
+
+- name: obtendo a lista de pacotes instalado
+  package_facts:
+    manager: auto
+
+- name: setando vars pacote docker e nginx caso exista
+  set_fact:
+    docker_ce: "{% if ansible_facts.packages['docker-ce'] is defined %}{{ ansible_facts.packages['docker-ce'] }}{% endif %}"
+    docker_ee: "{% if ansible_facts.packages['docker'] is defined %} {{ ansible_facts.packages['docker'] }} {% endif %}"
+    nginx_ins: "{% if ansible_facts.packages['nginx'] is defined %}{{ ansible_facts.packages['nginx'] }}{% endif %}"
+
+- name: setando vars de pacotes instalados
+  set_fact:
+    docker_pkg: "{% if (docker_ce is defined and docker_ce | length > 0) or (docker_ee is defined and docker_ee | length > 0) %}true{% else %}false{% endif %}"
+    nginx_pkg: "{% if nginx_ins is defined and nginx_ins | length > 0 %}true{% else %}false{% endif %}"
+
+- name: debug
+  debug:
+    msg: "{% if nginx_pkg %}Srv NGINX: instalando consul template{% elif docker_pkg %}Srv DOCKER: instalando registrator{% endif %}"
+
+- name: garantindo que o selinux esteja desativado
+  selinux:
+    policy: targeted
+    state: disabled
+  failed_when: false
